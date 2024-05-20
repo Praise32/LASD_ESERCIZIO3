@@ -1,70 +1,137 @@
 
-#ifndef DICTIONARY_HPP
-#define DICTIONARY_HPP
-
-/* ************************************************************************** */
-
-#include "mappable.hpp"
+#ifndef CONTAINER_HPP
+#define CONTAINER_HPP
 
 /* ************************************************************************** */
 
 namespace lasd {
 
+    typedef unsigned long int ulong;
+
 /* ************************************************************************** */
 
-template <typename Data>
-class DictionaryContainer {
-  // Must extend TestableContainer<Data>
 
-private:
+    class Container {
 
-  // ...
+    private:
 
-protected:
 
-  // ...
+    protected:
 
-public:
+        ulong size = 0;
+        /* ************************************************************************ */
 
-  // Destructor
-  // ~DictionaryContainer() specifiers
 
-  /* ************************************************************************ */
 
-  // Copy assignment
-  // type operator=(argument); // Copy assignment of abstract types is not possible.
+    public:
 
-  // Move assignment
-  // type operator=(argument); // Move assignment of abstract types is not possible.
+        // Destructor
+        virtual ~Container() = default;
+        // ~Container() specifiers
 
-  /* ************************************************************************ */
+        /* ************************************************************************ */
 
-  // Comparison operators
-  // type operator==(argument) specifiers; // Comparison of abstract types is not possible.
-  // type operator!=(argument) specifiers; // Comparison of abstract types is not possible.
+// Copy assignment
+        Container& operator=(const Container& val) = delete;
+        // type operator=(argument); // Copy assignment of abstract types is not possible.
 
-  /* ************************************************************************ */
+        // Move assignment
+        Container& operator=(Container&& val) noexcept = delete;
+        // type operator=(argument); // Move assignment of abstract types is not possible.
 
-  // Specific member functions
+        /* ************************************************************************ */
 
-  // type Insert(argument) specifiers; // Copy of the value
-  // type Insert(argument) specifiers; // Move of the value
-  // type Remove(argument) specifiers;
+        // Comparison operators
+        bool operator==(const Container& val) const noexcept = delete;
+        bool operator!=(const Container& val) const noexcept = delete;
 
-  // type InsertAll(argument) specifiers; // Copy of the value; From TraversableContainer; True if all are inserted
-  // type InsertAll(argument) specifiers; // Move of the value; From MappableContainer; True if all are inserted
-  // type RemoveAll(argument) specifiers; // From TraversableContainer; True if all are removed
+        /* ************************************************************************ */
 
-  // type InsertSome(argument) specifiers; // Copy of the value; From TraversableContainer; True if some is inserted
-  // type InsertSome(argument) specifiers; // Move of the value; From MappableContainer; True if some is inserted
-  // type RemoveSome(argument) specifiers; // From TraversableContainer; True if some is removed
+        // Specific member functions
 
-};
+        virtual inline bool Empty() const noexcept { return (size == 0); }
+
+        virtual inline ulong Size() const noexcept { return size; }
+
+    };
+
+/* ************************************************************************** */
+
+    class ClearableContainer : public virtual Container {
+
+    private:
+
+    protected:
+
+    public:
+
+        // Destructor
+        virtual ~ClearableContainer() = default;
+
+        /* ************************************************************************ */
+
+        // Copy assignment
+        ClearableContainer& operator=(const ClearableContainer& val) = delete;
+
+        // Move assignment
+        ClearableContainer& operator=(ClearableContainer&& val) noexcept = delete;
+
+
+        /* ************************************************************************ */
+
+        // Comparison operators
+        bool operator==(const ClearableContainer& val) const noexcept = delete;
+        bool operator!=(const ClearableContainer& val) const noexcept = delete;
+
+        /* ************************************************************************ */
+
+        // Specific member functions
+
+        virtual void Clear() = 0;
+    };
+
+/* ************************************************************************** */
+
+    class ResizableContainer : public virtual ClearableContainer{
+
+    private:
+
+    protected:
+
+    public:
+
+        // Destructor
+        virtual ~ResizableContainer() = default;
+
+        /* ************************************************************************ */
+
+        // Copy assignment
+        ResizableContainer& operator=(const ResizableContainer& val) = delete;
+
+        // Move assignment
+        ResizableContainer& operator=(ResizableContainer&& val) noexcept = delete;
+
+        /* ************************************************************************ */
+
+        // Comparison operators
+        bool operator==(const ResizableContainer& val) const noexcept = delete;
+        bool operator!=(const ResizableContainer& val) const noexcept = delete;
+
+        /* ************************************************************************ */
+
+        // Specific member functions
+
+        virtual void Resize(const ulong new_size) = 0;
+
+        /* ************************************************************************ */
+
+        // Specific member function (inherited from ClearableContainer)
+
+        virtual inline void Clear() override { Resize(0); }
+    };
 
 /* ************************************************************************** */
 
 }
-
-#include "dictionary.cpp"
 
 #endif
